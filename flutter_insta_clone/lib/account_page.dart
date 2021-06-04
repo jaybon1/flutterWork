@@ -1,13 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  final User? user;
+
+  const AccountPage({Key? key, this.user}) : super(key: key);
 
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +25,10 @@ class _AccountPageState extends State<AccountPage> {
   AppBar _buildAppBar() {
     return AppBar(
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app)),
+        IconButton(onPressed: () {
+          FirebaseAuth.instance.signOut();
+          _googleSignIn.signOut();
+        }, icon: Icon(Icons.exit_to_app)),
       ],
     );
   }
@@ -40,7 +49,7 @@ class _AccountPageState extends State<AccountPage> {
                     height: 80.0,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2'),
+                          widget.user?.photoURL != null ? widget.user!.photoURL! : 'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2'),
                     ),
                   ),
                   Container(
@@ -73,7 +82,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               Text(
-                '이름',
+                widget.user?.displayName != null ? widget.user!.displayName! : "이름 없음",
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ],

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insta_clone/account_page.dart';
 import 'package:flutter_insta_clone/search_page.dart';
@@ -5,7 +6,9 @@ import 'package:flutter_insta_clone/search_page.dart';
 import 'home_page.dart';
 
 class TapPage extends StatefulWidget {
-  const TapPage({Key? key}) : super(key: key);
+  final User? user;
+
+  const TapPage({Key? key, this.user}) : super(key: key);
 
   @override
   _TapPageState createState() => _TapPageState();
@@ -14,11 +17,17 @@ class TapPage extends StatefulWidget {
 class _TapPageState extends State<TapPage> {
   int _selectedIndex = 0;
 
-  List _pages = [
-    HomePage(),
-    SearchPage(),
-    AccountPage(),
-  ];
+  late List _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomePage(user: widget.user),
+      SearchPage(),
+      AccountPage(user: widget.user,),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
