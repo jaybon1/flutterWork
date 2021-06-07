@@ -21,12 +21,12 @@ class _TapPageState extends State<TapPage> {
 
   @override
   void initState() {
-    super.initState();
     _pages = [
       HomePage(user: widget.user),
-      SearchPage(),
+      SearchPage(user: widget.user,),
       AccountPage(user: widget.user,),
     ];
+    super.initState();
   }
 
   @override

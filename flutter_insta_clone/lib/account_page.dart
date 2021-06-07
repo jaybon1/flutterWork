@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,6 +15,15 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  int _postCount = 0;
+
+  @override
+  void initState() {
+    _setPostCount();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +35,12 @@ class _AccountPageState extends State<AccountPage> {
   AppBar _buildAppBar() {
     return AppBar(
       actions: [
-        IconButton(onPressed: () {
-          FirebaseAuth.instance.signOut();
-          _googleSignIn.signOut();
-        }, icon: Icon(Icons.exit_to_app)),
+        IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              _googleSignIn.signOut();
+            },
+            icon: Icon(Icons.exit_to_app)),
       ],
     );
   }
@@ -48,8 +60,10 @@ class _AccountPageState extends State<AccountPage> {
                     width: 80.0,
                     height: 80.0,
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          widget.user?.photoURL != null ? widget.user!.photoURL! : 'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2'),
+                      backgroundImage: NetworkImage(widget.user?.photoURL !=
+                              null
+                          ? widget.user!.photoURL!
+                          : 'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2'),
                     ),
                   ),
                   Container(
@@ -82,13 +96,15 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               Text(
-                widget.user?.displayName != null ? widget.user!.displayName! : "이름 없음",
+                widget.user?.displayName != null
+                    ? widget.user!.displayName!
+                    : "이름 없음",
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           Text(
-            '0\n게시물',
+            '$_postCount\n게시물',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18.0),
           ),
@@ -105,5 +121,16 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
     );
+  }
+
+  void _setPostCount() async {
+    var result = await FirebaseFirestore.instance
+        .collection('post')
+        .where('email', isEqualTo: widget.user?.email ?? '')
+        .get();
+
+    setState(() {
+      _postCount = result.docs.length;
+    });
   }
 }
