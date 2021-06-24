@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>카카오 로그인</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    const returnData = async () => {
+        const loginParam = new URLSearchParams(location.search);
+
+        const data = {
+            provider : "K",
+            code : loginParam.get("code"),
+            state : loginParam.get("state")
+        }
+
+        await opener.checkSocialCodeDTO(JSON.stringify(data));
+        window.close();
+    }
+
+    returnData();
+
+</script>
+</body>
+</html>
+
