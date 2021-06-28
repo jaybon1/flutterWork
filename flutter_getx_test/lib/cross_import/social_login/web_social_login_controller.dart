@@ -121,8 +121,8 @@ class WebSocialLoginController extends GetxController
       return;
     }
 
-    SocialLoginUtils.loginCheck(rxSocialCodeDTO.value!)
-        .then((value) => print(value.body));
+    // SocialLoginUtils.loginCheck()
+    //     .then((value) => print(value.body));
   }
 }
 
